@@ -1,0 +1,4 @@
+[
+  {"tag":"PT-101","description":"Transmetteur de pression (EXEMPLE)","equipment":"","io_type":"AI","signal":"","service":"","pid":"DEMO","page":1,"datasheet":"","confidence":"À vérifier","validation":"À vérifier","commentaire":"Donnée fictive, non extraite du plan"},
+  {"tag":"XV-101-OPEN","description":"Retour vanne ouverte (EXEMPLE)","equipment":"XV-101","io_type":"DI","signal":"","service":"","pid":"DEMO","page":1,"datasheet":"","confidence":"À vérifier","validation":"À vérifier","commentaire":"Donnée fictive, non extraite du plan"}
+]
