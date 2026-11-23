@@ -119,7 +119,7 @@ with right:
         },
         key=f"editor_{state_id}",
     )
-    st.session_state.io_df = edited
+    st.session_state.io_edited = edited
     total = len(edited)
     validated = int((edited["validation"] == "Validé").sum()) if total else 0
     a, b = st.columns(2)
