@@ -7,6 +7,7 @@ from pathlib import Path
 import pandas as pd
 import pymupdf
 import streamlit as st
+from PIL import Image
 
 st.set_page_config(page_title="P&ID Analyzer | ECC", page_icon="📐", layout="wide")
 
@@ -53,6 +54,21 @@ def render_page(file_bytes, number):
         page = doc.load_page(number - 1)
         pix = page.get_pixmap(dpi=135, alpha=False)
         return pix.tobytes("png")
+
+@st.cache_data
+def crop_zone(png, colonne, ligne):
+    img = Image.open(io.BytesIO(png))
+    largeur, hauteur = img.size
+    w = largeur / 12
+    h = hauteur / 10
+    i = colonne - 1
+    j = "ABCDEFGHIJ".index(ligne)
+    marge = 0.3
+    gauche = max(0, (i - marge) * w)
+    haut = max(0, (j - marge) * h)
+    droite = min(largeur, (i + 1 + marge) * w)
+    bas = min(hauteur, (j + 1 + marge) * h)
+    return img.crop((gauche, haut, droite, bas))    
 
 st.title("P&ID Analyzer")
 st.caption("Prototype du pôle Application — Projet Innovation ECC × Actemium")
@@ -101,6 +117,11 @@ with left:
                 number = st.number_input("Page à afficher", min_value=1, max_value=count, value=1)
                 png = render_page(file_bytes, number)
                 st.image(png, caption=f"Page {number}", use_container_width=True)
+                st.markdown("**Zoom sur une case de la grille**")
+                c1, c2 = st.columns(2)
+                colonne = c1.selectbox("Colonne", list(range(1, 13)))
+                ligne = c2.selectbox("Ligne", list("ABCDEFGHIJ"))
+                st.image(crop_zone(png, colonne, ligne), caption=f"Case {ligne}{colonne}", use_container_width=True)
         except Exception as exc:
             st.error(f"Impossible d'ouvrir le PDF : {exc}")
     else:
