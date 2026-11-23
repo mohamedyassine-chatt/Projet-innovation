@@ -47,6 +47,12 @@ def excel_bytes(df):
             sheet.column_dimensions[letter].width = min(40, max(12, max(len(str(c.value or "")) for c in col) + 2))
     return buffer.getvalue()
 
+@st.cache_data
+def render_page(file_bytes, number):
+    with pymupdf.open(stream=file_bytes, filetype="pdf") as doc:
+        page = doc.load_page(number - 1)
+        pix = page.get_pixmap(dpi=135, alpha=False)
+        return pix.tobytes("png")
 
 st.title("P&ID Analyzer")
 st.caption("Prototype du pôle Application — Projet Innovation ECC × Actemium")
@@ -93,9 +99,8 @@ with left:
                 count = len(doc)
                 st.write(f"**Document :** {pdf.name} — **{count} page(s)**")
                 number = st.number_input("Page à afficher", min_value=1, max_value=count, value=1)
-                page = doc.load_page(number - 1)
-                pix = page.get_pixmap(dpi=135, alpha=False)
-                st.image(pix.tobytes("png"), caption=f"Page {number}", use_container_width=True)
+                png = render_page(file_bytes, number)
+                st.image(png, caption=f"Page {number}", use_container_width=True)
         except Exception as exc:
             st.error(f"Impossible d'ouvrir le PDF : {exc}")
     else:
