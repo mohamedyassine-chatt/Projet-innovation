@@ -7,13 +7,21 @@ from pathlib import Path
 import pandas as pd
 import pymupdf
 import streamlit as st
-from PIL import Image
+
+import os
+import tempfile
+
+from extraction import extraire_tags
+from classification import classifier
+from controles import verifier
+from export import exporter_excel
 
 st.set_page_config(page_title="P&ID Analyzer | ECC", page_icon="📐", layout="wide")
 
 COLUMNS = [
-    "tag", "description", "equipment", "io_type", "signal", "service",
-    "pid", "page", "datasheet", "confidence", "validation", "commentaire"
+    "tag", "type_io", "description", "zone", "fonction", "boucle",
+    "jb", "elevation", "page", "x", "y", "regle", "source",
+    "a_verifier", "validation", "commentaire", "fichier",
 ]
 
 
@@ -54,42 +62,46 @@ def render_page(file_bytes, number):
         page = doc.load_page(number - 1)
         pix = page.get_pixmap(dpi=135, alpha=False)
         return pix.tobytes("png")
-  
+
+@st.cache_data(show_spinner="Analyse du plan en cours…")
+def analyser(file_bytes, nom):
+    with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as f:
+        f.write(file_bytes)
+        chemin = f.name
+    try:
+        tags = extraire_tags(chemin)
+    finally:
+        try:
+            os.remove(chemin)
+        except OSError:
+            pass
+    signaux = classifier(tags)
+    for s, t in zip(signaux, tags):
+        s["x"], s["y"] = t["x"], t["y"]
+        s["fichier"] = nom
+        s["validation"] = "À vérifier" if s["a_verifier"] else "OK"
+    return signaux  
 
 st.title("P&ID Analyzer")
 st.caption("Prototype du pôle Application — Projet Innovation ECC × Actemium")
-st.info("Cette version visualise les PDF et permet de travailler sur des données I/O. Elle ne détecte PAS encore automatiquement les instruments.")
+st.info("Chargez un plan, cliquez sur Analyser, puis vérifiez les lignes marquées À vérifier.")
 
 with st.sidebar:
     st.header("Documents")
     pdf = st.file_uploader("Charger un plan P&ID (PDF)", type=["pdf"])
-    st.divider()
-    st.header("Données de test")
-    mode = st.radio("Source des résultats", ["Exemple fictif", "Importer un JSON"], index=0)
-    imported = st.file_uploader("Fichier JSON du pôle Extraction", type=["json"]) if mode == "Importer un JSON" else None
-    st.caption("Un JSON importé doit contenir une liste de signaux I/O et respecter le schéma du dossier data.")
+    lancer = st.button("🔍 Analyser le plan", disabled=pdf is None, width="stretch")
 
 file_bytes = pdf.getvalue() if pdf else None
 file_id = hashlib.sha256(file_bytes).hexdigest() if file_bytes else "no-pdf"
-raw_json = imported.getvalue() if imported else None
-json_id = hashlib.sha256(raw_json).hexdigest() if raw_json else "demo"
-state_id = f"{file_id}:{mode}:{json_id}"
 
-if st.session_state.get("dataset_id") != state_id:
-    try:
-        if mode == "Importer un JSON":
-            records = json.loads(raw_json.decode("utf-8")) if raw_json else []
-        else:
-            records = json.loads((Path(__file__).parent / "data" / "demo_results.json").read_text(encoding="utf-8"))
-        st.session_state.io_df = as_table(records)
-        st.session_state.dataset_error = ""
-    except (ValueError, UnicodeError, json.JSONDecodeError) as exc:
-        st.session_state.io_df = as_table([])
-        st.session_state.dataset_error = f"JSON invalide : {exc}"
-    st.session_state.dataset_id = state_id
+if lancer:
+    st.session_state.io_df = as_table(analyser(file_bytes, pdf.name))
+    st.session_state.dataset_id = file_id
 
-if st.session_state.get("dataset_error"):
-    st.error(st.session_state.dataset_error)
+if st.session_state.get("dataset_id") != file_id:
+    st.session_state.io_df = as_table([])
+
+state_id = st.session_state.get("dataset_id", "vide")
 
 left, right = st.columns([1, 1.2], gap="large")
 
@@ -110,8 +122,6 @@ with left:
 
 with right:
     st.subheader("2. Liste I/O et validation")
-    if mode == "Exemple fictif":
-        st.warning("Les lignes ci-dessous sont FICTIVES. Elles ne proviennent pas du PDF chargé.")
     st.write("Ajoutez, modifiez ou supprimez des lignes. Une ligne = un signal I/O.")
     edited = st.data_editor(
         st.session_state.io_df,
@@ -119,9 +129,9 @@ with right:
         hide_index=True,
         use_container_width=True,
         column_config={
-            "io_type": st.column_config.SelectboxColumn("Type", options=["AI", "AO", "DI", "DO", "À déterminer"], required=False),
-            "validation": st.column_config.SelectboxColumn("Validation", options=["À vérifier", "Validé", "Rejeté"], required=False),
-            "confidence": st.column_config.SelectboxColumn("Confiance", options=["Élevé", "Moyen", "Faible", "À vérifier"], required=False),
+            "type_io": st.column_config.SelectboxColumn("Type", options=["AI", "AO", "DI", "DO", "AUCUN", "INCONNU"]),
+            "validation": st.column_config.SelectboxColumn("Validation", options=["À vérifier", "OK", "Validé", "Rejeté"]),
+            "a_verifier": st.column_config.TextColumn("À vérifier", disabled=True),
             "page": st.column_config.NumberColumn("Page", min_value=1, step=1),
         },
         key=f"editor_{state_id}",
