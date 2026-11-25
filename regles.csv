@@ -1,0 +1,40 @@
+fonction,type_io,description
+TIT,AI,Transmetteur de température
+PIT,AI,Transmetteur de pression
+FIT,AI,Transmetteur de débit
+LIT,AI,Transmetteur de niveau
+AIT,AI,Transmetteur d'analyse
+DIT,AI,Transmetteur de densité
+ZIT,AI,Transmetteur de position
+PDIT,AI,Transmetteur de pression différentielle
+ZSH,DI,Fin de course haut (ouvert)
+ZSL,DI,Fin de course bas (fermé)
+FSLL,DI,Contacteur de débit très bas
+FSL,DI,Contacteur de débit bas
+LSH,DI,Contacteur de niveau haut
+LSL,DI,Contacteur de niveau bas
+PSH,DI,Contacteur de pression haut
+PSL,DI,Contacteur de pression bas
+EV,DO,Électrovanne (commande)
+AY,AO,Positionneur / convertisseur (à valider)
+LY,AO,Convertisseur de niveau (à valider)
+AV,AUCUN,Vanne (actionneur)
+XV,AUCUN,Vanne tout-ou-rien (signaux via EV / ZSH / ZSL)
+LV,AUCUN,Vanne de régulation (signal via LY)
+TE,AUCUN,Élément primaire température
+PE,AUCUN,Élément primaire pression
+FE,AUCUN,Élément primaire débit
+LE,AUCUN,Élément primaire niveau
+AE,AUCUN,Élément primaire analyse
+DE,AUCUN,Élément primaire densité
+PI,AUCUN,Indicateur local pression
+TI,AUCUN,Indicateur local température
+FI,AUCUN,Indicateur local débit
+LI,AUCUN,Indicateur local niveau
+PY,AO,Convertisseur I/P pression (commande vanne)
+TY,AO,Convertisseur I/P température (commande vanne)
+FY,AO,Convertisseur I/P débit (commande vanne)
+PV,AUCUN,Vanne de régulation pression (signal via PY)
+TV,AUCUN,Vanne de régulation température (signal via TY)
+FV,AUCUN,Vanne de régulation débit (signal via FY)
+HV,AUCUN,Vanne manuelle / tout-ou-rien (signaux via EV / ZSH / ZSL)

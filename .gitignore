@@ -3,3 +3,6 @@
 *.png
 *.csv
 __pycache__/
+!gabarits/*.png
+!regles.csv
+*.xlsx
