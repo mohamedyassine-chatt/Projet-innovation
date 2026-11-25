@@ -4,3 +4,6 @@ __pycache__/
 *.pyc
 .DS_Store
 .env
+!gabarits/*.png
+!regles.csv
+*.xlsx
