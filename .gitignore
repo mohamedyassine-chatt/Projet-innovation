@@ -3,3 +3,6 @@
 *.png
 *.csv
 __pycache__/
+.venv/
+.pytest_cache/
+.streamlit/secrets.toml
