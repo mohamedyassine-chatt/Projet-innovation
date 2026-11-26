@@ -1,0 +1,26 @@
+/* P&ID Analyzer - identité sobre de poste de travail industriel. */
+.block-container {padding-top: 1.35rem; padding-bottom: 2rem; max-width: 1800px;}
+header[data-testid="stHeader"] {background: transparent;}
+[data-testid="stSidebar"] {border-right: 1px solid #1E3954;}
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {line-height: 1.45;}
+[data-testid="stSidebar"] hr {border-color: #35516E;}
+[data-testid="stMetric"] {border: 1px solid #E0E7EF; border-radius: 12px; padding: 13px 17px; background: #FFFFFF;}
+[data-testid="stMetricLabel"] {font-size: .79rem;}
+[data-testid="stMetricValue"] {font-size: 1.65rem; font-weight: 680; color:#122B43;}
+[data-testid="stFileUploader"] {border-radius: 10px;}
+[data-testid="stDataEditor"] {border-radius:10px; overflow:hidden;}
+.stButton button, .stDownloadButton button {border-radius: 8px; font-weight: 600;}
+.app-header {display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; padding:8px 2px 18px; border-bottom:1px solid #DEE5ED; margin-bottom:15px;}
+.app-brand {display:flex; gap:14px; align-items:center;}
+.app-mark {height:44px; width:44px; display:grid; place-items:center; background:#132E4C; color:#E9F6FF; font-weight:800; letter-spacing:-1px; border-radius:10px; font-size:15px;}
+.app-name {font-size:1.43rem; line-height:1.2; color:#152A41; font-weight:760; letter-spacing:-.4px;}
+.app-subtitle {color:#66788C; font-size:.77rem; margin-top:4px;}
+.app-tag {border:1px solid #CAD8E7; background:#EAF1F8; color:#254E73; border-radius:999px; padding:6px 11px; font-size:.74rem; font-weight:650;}
+.section-heading {margin:2px 0 10px; font-size:1rem; font-weight:730; color:#23364B;}
+.section-note {color:#7A8B9D; font-size:.76rem; margin-top:-7px; margin-bottom:12px;}
+.status-strip {padding:10px 14px; border:1px solid #DAE6F1; background:#EFF5FB; border-radius:9px; color:#3B5876; font-size:.83rem; margin-bottom:17px;}
+.sidebar-brand {padding:5px 0 16px; color:white; border-bottom:1px solid #344B64; margin-bottom:17px;}
+.sidebar-title {font-size:1.12rem; font-weight:750; letter-spacing:.15px;}
+.sidebar-sub {color:#A7C5DF; font-size:.75rem; margin-top:3px;}
+.footerline {color:#8291A1; font-size:.77rem; border-top:1px solid #E2EAF2; margin-top:25px; padding-top:11px;}
+@media(max-width:900px){.app-name{font-size:1.2rem}.block-container{padding-top:.65rem}}

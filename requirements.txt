@@ -5,3 +5,5 @@ numpy
 pytesseract
 openpyxl
 pymupdf
+pandas
+streamlit

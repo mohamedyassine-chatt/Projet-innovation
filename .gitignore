@@ -6,3 +6,6 @@ __pycache__/
 !gabarits/*.png
 !regles.csv
 *.xlsx
+.venv/
+.pytest_cache/
+.streamlit/secrets.toml
